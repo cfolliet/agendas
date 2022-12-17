@@ -1,10 +1,10 @@
 
 
-function agendas() {
+function Agendas() {
     let meetings = [];
 
-    function addMeeting() {
-        meetings.push({})
+    function addMeeting(m) {
+        meetings.push(m)
     }
 
     return {
@@ -13,17 +13,24 @@ function agendas() {
     }
 }
 
+function Meeting(day, start, end, _gests) {
+    let guests = _gests; // ['guest1', 'guests2', ...]
+    let interval = [day, start, end]; // [day, start, end] == [0, 900, 1030] == monday from 9 to 10:30
 
-function tests() {
+    return { guests, interval }
+}
+
+
+function Tests() {
 
     function addMeeting() {
-        let a = agendas()
+        let a = Agendas()
         a.addMeeting()
         if (a.meetings.length !== 1) throw 'addMeeting'
     }
 
     function run() {
-        addMeeting()
+        addMeeting(null)
 
         console.log('all good')
     }
@@ -35,4 +42,4 @@ function tests() {
 }
 
 
-tests().run()
+Tests().run()
