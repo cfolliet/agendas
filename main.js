@@ -13,6 +13,20 @@ function Agendas() {
     }
 }
 
+function utils()
+{
+    function getTime(t)
+    {
+        let hours = Math.trunc(t/60)
+        let minutes = t%60
+        return hours.toString().padStart(2, 0) + ':' + minutes.toString().padStart(2, 0)
+    }
+
+    return {
+        getTime
+    }
+}
+
 function Meeting(_name, _gests, _day, _start, _duration) {
     // duration in minutes
     let name = _name
@@ -44,17 +58,23 @@ function Tests() {
         if (a.meetings.length !== 1) throw 'addMeeting'
     }
 
-    function setTime (t) {
+    function setTime () {
         // todo get a time "9:30" or "14:15" and translate it into nb of minutes starting at "0:00"
     }
 
-    function getTime (t) {
+    function getTime () {
         // todo nb of minutes starting at "0:00" translate it into a time like "9:30" or "14:15"
+        if(utils().getTime(30) != '00:30') throw 'getTime'
+        if(utils().getTime(60) != '01:00') throw 'getTime'
+        if(utils().getTime(120) != '02:00') throw 'getTime'
+        if(utils().getTime(1200) != '20:00') throw 'getTime'
+        if(utils().getTime(1230) != '20:30') throw 'getTime'
     }
 
     function run() {
         addMeeting(null)
-
+        getTime()
+        setTime()
         console.log('all good')
     }
 
