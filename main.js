@@ -7,9 +7,16 @@ function Agendas() {
         meetings.push(m)
     }
 
+    function toString() {
+        meetings.forEach(m => {
+            console.log(m.name, utils().getTime(m.start), '-', utils().getTime(m.end), m.guests)
+        })
+    }
+
     return {
         meetings,
-        addMeeting
+        addMeeting,
+        toString
     }
 }
 
@@ -27,9 +34,21 @@ function utils() {
         return minutes + hours * 60
     }
 
+    function getRandomDuration() {
+        const durations = [30, 45, 60, 90, 120];
+        const random = Math.floor(Math.random() * durations.length)
+        return durations[random];
+    }
+
+    function getRandomTime(){
+        return Math.floor((Math.random() * 96)) * 15; // 96*15min in a day
+    }
+
     return {
         getTime,
-        setTime
+        setTime,
+        getRandomDuration,
+        getRandomTime
     }
 }
 
@@ -54,6 +73,22 @@ function defineNeeds() {
     ]
 
     return n;
+}
+
+function Generator() {
+
+    function generateRandom(needs) {
+        let a = Agendas()
+        needs.forEach(n => {
+            let m = Meeting(n[0], n[1], 0, utils().getRandomTime(), utils().getRandomDuration(), n[2])
+            a.addMeeting(m)
+        })
+        return a
+    }
+
+    return {
+        generateRandom
+    }
 }
 
 function Tests() {
@@ -97,3 +132,4 @@ function Tests() {
 
 
 Tests().run()
+Generator().generateRandom(defineNeeds()).toString()
