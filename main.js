@@ -8,7 +8,7 @@ function Agendas() {
     }
 
     function toString() {
-        meetings.forEach(m => {
+        meetings.sort((a, b) => a.start - b.start).sort((a, b) => a.day - b.day).forEach(m => {
             m.toString()
         })
     }
