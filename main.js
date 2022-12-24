@@ -107,7 +107,7 @@ function defineNeeds() {
         ['Weekly aurelie', ['clement', 'aurelie'], 29],
         ['Eng leader', ['clement', 'florian', 'virgile', 'kleroy', 'stephane', 'klacointe', 'david', 'robert', 'pix'], 45],
         ['1:1 yann', ['clement', 'yann'], 29],
-        ['1:1 robert', ['clement', 'robert'], 29]       
+        ['1:1 robert', ['clement', 'robert'], 29]
     ]
 
     return n2;
@@ -128,16 +128,22 @@ function Generator() {
         let score = 0
 
         agenda.meetings.forEach(m => {
-            agenda.meetings.forEach(m2 => {
-                let isSameMeeting = m == m2
-                if (!isSameMeeting) {
-                    let isSameTime = m.day == m2.day && (m.start <= m2.end && m2.start <= m.end)
-                    let sameGuests = m.guests.filter(g => m2.guests.includes(g)).length;
-                    if (!isSameTime || !sameGuests) {
-                        score++
+            let startDay = 9 * 60 // 9h
+            let endDay = 18 * 60 // 18h
+            let isWorkingInWorkingHours = m.end <= endDay && startDay <= m.start
+            if (isWorkingInWorkingHours) {
+                agenda.meetings.forEach(m2 => {
+                    let isSameMeeting = m == m2
+                    if (!isSameMeeting) {
+                        let isSameTime = m.day == m2.day && (m.start <= m2.end && m2.start <= m.end)
+                        let sameGuests = m.guests.filter(g => m2.guests.includes(g)).length;
+                        if (!isSameTime || !sameGuests) {
+                            score++
+                        }
                     }
-                }
-            })
+                })
+            }
+
         })
 
         return score
@@ -177,13 +183,13 @@ function Tests() {
 
     function fitnessFunction() {
         let a = Agendas()
-        let m = Meeting("a", ['a', 'b'], 0, 00, 59)
-        let m2 = Meeting("b", ['c', 'd'], 0, 60, 59)
-        let m3 = Meeting("c", ['a', 'd'], 0, 120, 59)
-        let m4 = Meeting("d", ['a', 'b'], 1, 00, 59)
+        let m = Meeting("a", ['a', 'b'], 0, 540, 59)
+        let m2 = Meeting("b", ['c', 'd'], 0, 600, 59)
+        let m3 = Meeting("c", ['a', 'd'], 0, 660, 59)
+        let m4 = Meeting("d", ['a', 'b'], 1, 540, 59)
 
-        let m5 = Meeting("e", ['a', 'e'], 0, 00, 59)
-        let m6 = Meeting("f", ['c', 'f'], 0, 90, 59)
+        let m5 = Meeting("e", ['a', 'e'], 0, 540, 59)
+        let m6 = Meeting("f", ['c', 'f'], 0, 630, 59)
         a.addMeeting(m)
         a.addMeeting(m2)
         if (2 != Generator().fitnessFunction(a)) throw 'fitnessFunction' // 2*2-2
@@ -195,7 +201,8 @@ function Tests() {
         if (18 != Generator().fitnessFunction(a)) throw 'fitnessFunction' //5*5-5-2
         a.addMeeting(m6)
         if (26 != Generator().fitnessFunction(a)) throw 'fitnessFunction' //6*6-6-2-2 = nbevent*nbevent-nbevent-2eventinsametime-2othereventinsametime
-        //a = Agendas()
+        
+        // todo need to add test with meeting out of hours
 
     }
 
@@ -218,5 +225,5 @@ Tests().run()
 let g = Generator()
 let a = g.generateRandom(defineNeeds())
 a.toString()
-console.log('best score with 24m', 24*24-24)
-console.log(g.fitnessFunction(a))
+//console.log('best score with 24m', 24 * 24 - 24)
+//console.log(g.fitnessFunction(a))
