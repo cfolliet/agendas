@@ -81,7 +81,36 @@ function defineNeeds() {
         ['EM chapter', ['clement', 'virgile'], 44]
     ]
 
-    return n;
+    let wttjTeam = ['clement', 'clem', 'robert', 'theo', 'diane', 'victoire', 'pierre', 'maxime', 'arthur', 'aurele']
+    let wkteam = ['clement', 'yann', 'sebastien', 'sylvain', 'guillaume', 'mathys', 'isaac', 'jero']
+    let n2 = [
+        ['Clem Devs', ['clement', 'clem', 'robert', 'theo', 'diane', 'victoire', 'pierre', 'maxime', 'yann', 'sebastien', 'sylvain', 'guillaume', 'mathys', 'isaac'], 29],
+        ['EM Weekly', ['clement', 'virgile', 'florian'], 44],
+        ['1:1 clem', ['clement', 'clem'], 29],
+        ['Daily WTTJ', wttjTeam, 14], //todo x3
+        ['Daily WK', wkteam, 14], //todo x3
+        ['1:1 seb', ['clement', 'sebastien'], 29],
+        ['1:1 gui', ['clement', 'guillaume'], 29],
+        ['1:1 diane', ['clement', 'diane'], 29],
+        ['1:1 sylvain', ['clement', 'sylvain'], 29],
+        ['Squad Workshop', wttjTeam, 59],
+        ['WTTJ replenishment', wttjTeam, 29],
+        ['EM Chapter', ['clement', 'florian', 'virgile', 'kleroy'], 59],
+        ['1:1 Maxime', ['clement', 'maxime'], 29],
+        ['1:1 theo', ['clement', 'theo'], 29],
+        ['Monthly stagiaire', ['victoire', 'mathys', 'pierre', 'isaac'], 29],
+        ['Tech manager bimonthly', ['kleroy', 'florian', 'virgile', 'clement'], 89],
+        ['Weekly WK', wkteam, 89],
+        ['weekly jero', ['clement', 'jero'], 29],
+        ['weekly aurele', ['clement', 'aurele', 'arthur'], 29],
+        ['1:1 kleroy', ['clement', 'kleroy'], 29],
+        ['Weekly aurelie', ['clement', 'aurelie'], 29],
+        ['Eng leader', ['clement', 'florian', 'virgile', 'kleroy', 'stephane', 'klacointe', 'david', 'robert', 'pix'], 45],
+        ['1:1 yann', ['clement', 'yann'], 29],
+        ['1:1 robert', ['clement', 'robert'], 29]       
+    ]
+
+    return n2;
 }
 
 function Generator() {
@@ -189,4 +218,5 @@ Tests().run()
 let g = Generator()
 let a = g.generateRandom(defineNeeds())
 a.toString()
+console.log('best score with 24m', 24*24-24)
 console.log(g.fitnessFunction(a))
