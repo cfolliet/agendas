@@ -139,13 +139,13 @@ function fitness(agenda) {
 }
 
 import pkg from 'genalgo';
-const { GenAlgo, lesser, tournament3Single, tournament3Pair } = pkg;
+const { GenAlgo, lesser, tournament3Single, tournament3Pair, fittestRandomPair } = pkg;
 
 // Create a GenAlgo object with simple parameters
 const algo = new GenAlgo({
     mutationProbability: 0.8,
     crossoverProbability: 0.2,
-    iterationNumber: 5000,
+    iterationNumber: 1000,
     resultSize: 1
 });
 
@@ -190,7 +190,7 @@ const iterationCallback = ({
     return true;
 };
 
-algo.setSeed(getRandomAgendas(100));
+algo.setSeed(getRandomAgendas(300));
 
 algo.setFitnessEvaluator(fitness);
 
@@ -200,7 +200,7 @@ algo.setCrossoverFunction(crossover);
 
 algo.setSelectSingleFunction(tournament3Single);
 
-algo.setSelectPairFunction(tournament3Pair);
+algo.setSelectPairFunction(fittestRandomPair);
 
 algo.setIterationCallback(iterationCallback);
 
