@@ -1,0 +1,6 @@
+{
+  "type": "module",
+  "dependencies": {
+    "genalgo": "^1.1.0"
+  }
+}
