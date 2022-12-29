@@ -145,7 +145,7 @@ const { GenAlgo, lesser, tournament3Single, tournament3Pair } = pkg;
 const algo = new GenAlgo({
     mutationProbability: 0.8,
     crossoverProbability: 0.2,
-    iterationNumber: 25,
+    iterationNumber: 5000,
     resultSize: 1
 });
 
@@ -154,8 +154,8 @@ const mutation = agenda => {
     let a = Agenda(agenda.times)
 
     a.times.forEach(t => {
-        if (Math.random() > 0.1) {
-            t.time += 30
+        if (Math.random() > 0.5) {
+            t.time = utils().getRandomTime()
         }
     })
 
