@@ -1,6 +1,6 @@
 function Agenda(_times) {
     const meetings = defineNeeds()
-    const times = _times || [] // pair of {day, timeInMinutes} for each meeting
+    const times = _times || new Array(meetings.length).fill(null).map(() => { return { day: 0, time: 0 } }) // pair of {day, timeInMinutes} for each meeting
 
     function toString() {
         meetings.map((m, i) => {
@@ -45,6 +45,8 @@ function utils() {
     }
 
     return {
+        startDay: 9 * 60, // 9h
+        endDay: 18 * 60, // 18h
         getTime,
         setTime,
         getRandomDuration,
@@ -109,12 +111,10 @@ function fitness(agenda) {
     let score = 0
 
     agenda.meetings.forEach((m, i) => {
-        let startDay = 9 * 60 // 9h
-        let endDay = 18 * 60 // 18h
         const day = agenda.times[i].day
         const start = agenda.times[i].time
         const end = agenda.times[i].time + m.duration
-        let isWorkingInWorkingHours = end <= endDay && startDay <= start
+        let isWorkingInWorkingHours = end <= utils().endDay && utils().startDay <= start
         if (isWorkingInWorkingHours) {
             agenda.meetings.forEach((m2, i2) => {
                 let isSameMeeting = m == m2
@@ -210,4 +210,40 @@ async function runGenetic() {
     result[0].entity.toString()
 }
 
-runGenetic()
+//runGenetic()
+
+function pileUp() {
+    let agenda = Agenda()
+    let meetings = agenda.meetings
+    let slots = agenda.times
+
+    meetings = meetings
+        .sort((a, b) => b.guests.length - a.guests.length)
+        .sort((a, b) => b.duration - a.duration)
+
+    //
+    //
+    // YYYYZTY
+    // AAAABBBB
+    // XXXXXXOOOOOO
+
+    meetings.forEach((m, i) => {
+        let slot = slots[i]
+        if (i == 0) {
+            slot.day = 0
+            slot.time = utils().startDay
+        }
+
+        areGuestsAvailable(agenda, m)
+
+    })
+
+    function areGuestsAvailable(agenda, meeting) {
+        
+    }
+
+    agenda.toString()
+    //console.log(meetings)
+}
+
+pileUp()
