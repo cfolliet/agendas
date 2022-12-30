@@ -139,70 +139,75 @@ function fitness(agenda) {
 }
 
 import pkg from 'genalgo';
-const { GenAlgo, lesser, tournament3Single, tournament3Pair, fittestRandomPair } = pkg;
+async function runGenetic() {
 
-// Create a GenAlgo object with simple parameters
-const algo = new GenAlgo({
-    mutationProbability: 0.8,
-    crossoverProbability: 0.2,
-    iterationNumber: 1000,
-    resultSize: 1
-});
+    const { GenAlgo, lesser, tournament3Single, tournament3Pair, fittestRandomPair } = pkg;
 
-// Function used to mutate an individual
-const mutation = agenda => {
-    let a = Agenda(agenda.times)
+    // Create a GenAlgo object with simple parameters
+    const algo = new GenAlgo({
+        mutationProbability: 0.8,
+        crossoverProbability: 0.2,
+        iterationNumber: 1000,
+        resultSize: 1
+    });
 
-    a.times.forEach(t => {
-        if (Math.random() > 0.5) {
-            t.time = utils().getRandomTime()
+    // Function used to mutate an individual
+    const mutation = agenda => {
+        let a = Agenda(agenda.times)
+
+        a.times.forEach(t => {
+            if (Math.random() > 0.5) {
+                t.time = utils().getRandomTime()
+            }
+        })
+
+        return a
+    };
+
+    // Function used to crossover two individuals
+    const crossover = (agenda1, agenda2) => {
+        let child1 = Agenda(agenda1.times)
+        let child2 = Agenda(agenda2.times)
+
+        for (let index = 0; index < agenda1.meetings.length; index++) {
+            if (index % 0) {
+                child1.times[index] = child2.times[index]
+            } else {
+                child2.times[index] = child1.times[index]
+            }
         }
-    })
 
-    return a
-};
+        return [child1, child2];
+    };
 
-// Function used to crossover two individuals
-const crossover = (agenda1, agenda2) => {
-    let child1 = Agenda(agenda1.times)
-    let child2 = Agenda(agenda2.times)
+    // Will be called at each iteration
+    const iterationCallback = ({
+        bestIndividual,
+        elapsedTime,
+        iterationNumber
+    }) => {
+        console.log("Iteration " + iterationNumber);
+        console.log("Best fitness : " + bestIndividual.fitness);
+        console.log("Elapsed time : " + elapsedTime);
+        return true;
+    };
 
-    for (let index = 0; index < agenda1.meetings.length; index++) {
-        if (index % 0) {
-            child1.times[index] = child2.times[index]
-        } else {
-            child2.times[index] = child1.times[index]
-        }
-    }
+    algo.setSeed(getRandomAgendas(300));
 
-    return [child1, child2];
-};
+    algo.setFitnessEvaluator(fitness);
 
-// Will be called at each iteration
-const iterationCallback = ({
-    bestIndividual,
-    elapsedTime,
-    iterationNumber
-}) => {
-    console.log("Iteration " + iterationNumber);
-    console.log("Best fitness : " + bestIndividual.fitness);
-    console.log("Elapsed time : " + elapsedTime);
-    return true;
-};
+    algo.setMutationFunction(mutation);
 
-algo.setSeed(getRandomAgendas(300));
+    algo.setCrossoverFunction(crossover);
 
-algo.setFitnessEvaluator(fitness);
+    algo.setSelectSingleFunction(tournament3Single);
 
-algo.setMutationFunction(mutation);
+    algo.setSelectPairFunction(fittestRandomPair);
 
-algo.setCrossoverFunction(crossover);
+    algo.setIterationCallback(iterationCallback);
 
-algo.setSelectSingleFunction(tournament3Single);
+    let result = await algo.start();
+    result[0].entity.toString()
+}
 
-algo.setSelectPairFunction(fittestRandomPair);
-
-algo.setIterationCallback(iterationCallback);
-
-let result = await algo.start();
-result[0].entity.toString()
+runGenetic()
