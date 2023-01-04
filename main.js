@@ -222,15 +222,20 @@ function initGuestTimes(meetings) {
     return guestNextTimes;
 }
 
-function getNextAvailability(guests, guestNextTimes) {
+function getNextAvailability(guests, duration, guestNextTimes) {
     let next = { day: 0, time: 0 }
 
     guests.forEach(g => {
         let available = guestNextTimes[g]
-        if(available.day > next.day || available.time > next.time){
+        if (available.day > next.day || available.time > next.time) {
             next = { day: available.day, time: available.time }
         }
     })
+
+    // go to next day if we cross the end of the current day
+    if (utils().endDay < next.time + duration) {
+        next = { day: next.day + 1, time: utils().startDay }
+    }
 
     return next;
 }
@@ -255,16 +260,14 @@ function pileUp() {
 
 
     meetings.forEach((m, i) => {
-        let nextAvailability = getNextAvailability(m.guests, guestNextTimes)
-        
+        let nextAvailability = getNextAvailability(m.guests, m.duration, guestNextTimes)
+
         // save the slot
         slots[i].day = nextAvailability.day
         slots[i].time = nextAvailability.time
 
         setMeetingToGuests(m.guests, nextAvailability, m.duration, guestNextTimes)
-        
-        // todo manage go to next day
-        
+
         //console.log(slots)
     })
 
