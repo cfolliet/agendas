@@ -227,7 +227,7 @@ function getNextAvailability(guests, duration, guestNextTimes) {
 
     guests.forEach(g => {
         let available = guestNextTimes[g]
-        if (available.day > next.day || available.time > next.time) {
+        if (available.day > next.day || (available.day == next.day && available.time > next.time)) {
             next = { day: available.day, time: available.time }
         }
     })
@@ -267,13 +267,10 @@ function pileUp() {
         slots[i].time = nextAvailability.time
 
         setMeetingToGuests(m.guests, nextAvailability, m.duration, guestNextTimes)
-
-        //console.log(slots)
     })
 
-
     agenda.toString()
-    //console.log(meetings)
+    console.log(fitness(agenda))
 }
 
 pileUp()
