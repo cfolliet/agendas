@@ -212,37 +212,59 @@ async function runGenetic() {
 
 //runGenetic()
 
+function initGuestTimes(meetings) {
+    let guestNextTimes = {} // {name: {day, time}}
+    meetings.forEach(m => {
+        m.guests.forEach(g => {
+            //console.log(g)
+            guestNextTimes[g] = { day: 0, time: utils().startDay }
+        })
+    })
+    return guestNextTimes;
+}
+
+function getNextAvailability(guests, guestNextTimes) {
+    let next = { day: 0, time: 0 }
+
+    guests.forEach(g => {
+        let available = guestNextTimes[g]
+        if(available.day > next.day || available.time > next.time){
+            next = available
+        }
+    })
+
+    return next;
+}
+
+function setMeetingToGuests(guests, start, duration, guestNextTimes) {
+    guests.forEach(g => {
+        guestNextTimes[g].day = start.day
+        guestNextTimes[g].time = start.time + duration - 1
+    })
+}
+
 function pileUp() {
     let agenda = Agenda()
     let meetings = agenda.meetings
     let slots = agenda.times
 
+    let guestNextTimes = initGuestTimes(meetings) // {name: {day, time}}
+
+    //console.log(guestNextTimes)
+
     meetings = meetings
         .sort((a, b) => b.guests.length - a.guests.length)
         .sort((a, b) => b.duration - a.duration)
 
-    //
-    //
-    // YYYYZTY
-    // AAAABBBB
-    // XXXXXXOOOOOO
 
     meetings.forEach((m, i) => {
-        let slot = slots[i]
-        if (i == 0) {
-            slot.day = 0
-            slot.time = utils().startDay
-        }
-
-        areGuestsAvailable(agenda, m)
-
+        let nextAvailability = getNextAvailability(m.guests, guestNextTimes)
+        setMeetingToGuests(m.guests, nextAvailability, m.duration, guestNextTimes)
+        console.log(guestNextTimes)
     })
 
-    function areGuestsAvailable(agenda, meeting) {
-        
-    }
 
-    agenda.toString()
+    //agenda.toString()
     //console.log(meetings)
 }
 
