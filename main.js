@@ -237,6 +237,8 @@ function getNextAvailability(guests, duration, guestNextTimes) {
         next = { day: next.day + 1, time: utils().startDay }
     }
 
+    // todo need to take lunch break into account
+
     return next;
 }
 
@@ -274,3 +276,4 @@ function pileUp() {
 }
 
 pileUp()
+// todo add genetic algorithm to find the best sorting (but first need to improve fitness score using lunchbreak and maximise score for long period without any meeting)
