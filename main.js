@@ -41,7 +41,7 @@ function utils() {
     }
 
     function getRandomDay() {
-        return Math.floor((Math.random() * 3)) // 3 days workweek
+        return Math.floor((Math.random() * 5)) // 5 days workweek
     }
 
     return {
@@ -138,7 +138,22 @@ function fitness(agenda) {
 
     })
 
-    return score
+    // more time with everyone without meeting the better
+    const sortedMeetings = agenda.meetings.map((m, i) => {
+        return { meeting: m, slot: agenda.times[i] }
+    })
+        .sort((a, b) => a.slot.time - b.slot.time)
+        .sort((a, b) => a.slot.day - b.slot.day)
+
+    const fullDayDuration = utils().endDay - utils().startDay
+    const firstMeeting = sortedMeetings[0]
+    const start = firstMeeting.slot.day * fullDayDuration + firstMeeting.slot.time
+    const lastMeeting = sortedMeetings[sortedMeetings.length - 1]
+    const end = lastMeeting.slot.day * fullDayDuration + lastMeeting.slot.time + lastMeeting.meeting.duration
+    const fullMeetingsSpanDuration = end - start
+    const subscore = 1/fullMeetingsSpanDuration
+
+    return score + subscore
 }
 
 import pkg from 'genalgo';
@@ -249,7 +264,7 @@ function getNextAvailability(guests, duration, guestNextTimes) {
 }
 
 function setMeetingToGuests(guests, start, duration, guestNextTimes) {
-    
+
     guests.forEach((g, i) => {
         guestNextTimes[g].day = start.day
         guestNextTimes[g].time = start.time + duration + 1
@@ -283,4 +298,4 @@ function pileUp() {
 }
 
 pileUp()
-// todo add genetic algorithm to find the best sorting (but first need to improve fitness score to maximise score for long period without any meeting)
+// todo add genetic algorithm to find the best sorting
