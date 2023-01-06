@@ -47,6 +47,8 @@ function utils() {
     return {
         startDay: 9 * 60, // 9h
         endDay: 18 * 60, // 18h
+        startLunch: 12 * 60,
+        endLunch: 14 * 60,
         getTime,
         setTime,
         getRandomDuration,
@@ -237,13 +239,17 @@ function getNextAvailability(guests, duration, guestNextTimes) {
         next = { day: next.day + 1, time: utils().startDay }
     }
 
-    // todo need to take lunch break into account
+    // go to afternoon if we cross the lunch time
+    if (next.time <= utils().startLunch && utils().startLunch < next.time + duration) {
+        next = { day: next.day, time: utils().endLunch }
+    }
 
     return next;
 }
 
 function setMeetingToGuests(guests, start, duration, guestNextTimes) {
-    guests.forEach(g => {
+    
+    guests.forEach((g, i) => {
         guestNextTimes[g].day = start.day
         guestNextTimes[g].time = start.time + duration + 1
     })
