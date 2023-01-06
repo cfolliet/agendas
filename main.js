@@ -100,7 +100,7 @@ function defineNeeds() {
 function getRandomAgendas(nb) {
     const agendas = []
     for (let index = 0; index < nb; index++) {
-        const agenda = Agenda()
+        const agenda = Agenda([])
         agenda.meetings.forEach(() => {
             agenda.times.push({ day: utils().getRandomDay(), time: utils().getRandomTime() })
         })
@@ -283,4 +283,4 @@ function pileUp() {
 }
 
 pileUp()
-// todo add genetic algorithm to find the best sorting (but first need to improve fitness score using lunchbreak and maximise score for long period without any meeting)
+// todo add genetic algorithm to find the best sorting (but first need to improve fitness score to maximise score for long period without any meeting)
