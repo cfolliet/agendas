@@ -117,7 +117,8 @@ function fitness(agenda) {
         const start = agenda.times[i].time
         const end = agenda.times[i].time + m.duration
         let isWorkingInWorkingHours = end <= utils().endDay && utils().startDay <= start
-        if (isWorkingInWorkingHours) {
+        let isInLunchHours = end > utils().startLunch && end < utils().endLunch || start > utils().startLunch && start < utils().endLunch
+        if (isWorkingInWorkingHours && !isInLunchHours) {
             agenda.meetings.forEach((m2, i2) => {
                 let isSameMeeting = m == m2
                 if (!isSameMeeting) {
