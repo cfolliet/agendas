@@ -15,9 +15,7 @@ function Agenda(_times) {
 
     function toString2() {
         const dayDuration = utils().endDay - utils().startDay
-        const pas = 15
-        const maxMinutes = dayDuration * utils().nbDays
-        const maxCharacters = maxMinutes / pas; // maxMinutes(45h) / 15min
+        const pas = 15 // 15min
         const guests = {}
 
         meetings.map((m, i) => {
@@ -31,12 +29,24 @@ function Agenda(_times) {
 
                 m.meeting.guests.forEach(g => {
                     let guest = guests[g]
-                    if(!guest){
+                    if (!guest) {
                         guest = ''
                         guests[g] = guest
                     }
+                    guests[g] = guests[g].padEnd(charStart, ' ')
+                    let char = guests[g][guests[g].length - 1] == 'x' ? 'o' : 'x'
+                    guests[g] = guests[g].padEnd(charEnd, char)
                 })
             })
+
+        for (const key in guests) {
+            if (Object.hasOwnProperty.call(guests, key)) {
+                const element = guests[key];
+                const name = key.padStart(10, ' ') // remplacer le 10 par la longueur du plus grand nom
+                let s = name + ':' + element
+                console.log(s)
+            }
+        }
 
     }
 
@@ -323,6 +333,7 @@ function pileUp() {
         setMeetingToGuests(m.guests, nextAvailability, m.duration, guestNextTimes)
     })
 
+    agenda.toString()
     agenda.toString2()
     //console.log(fitness(agenda))
 }
