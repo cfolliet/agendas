@@ -24,8 +24,8 @@ function Agenda(_times) {
             .sort((a, b) => a.slot.time - b.slot.time)
             .sort((a, b) => a.slot.day - b.slot.day)
             .forEach(m => {
-                const charStart = (m.slot.day * dayDuration + m.slot.time - utils().startDay) / pas
-                const charEnd = (m.slot.day * dayDuration + m.slot.time + m.meeting.duration + 1 - utils().startDay) / pas
+                const charStart = ((m.slot.day * dayDuration + m.slot.time - utils().startDay) / pas) * 2
+                const charEnd = ((m.slot.day * dayDuration + m.slot.time + m.meeting.duration + 1 - utils().startDay) / pas) * 2
 
                 m.meeting.guests.forEach(g => {
                     let guest = guests[g]
@@ -35,7 +35,9 @@ function Agenda(_times) {
                     }
                     guests[g] = guests[g].padEnd(charStart, ' ')
                     let char = guests[g][guests[g].length - 1] == 'x' ? 'o' : 'x'
-                    guests[g] = guests[g].padEnd(charEnd, char)
+                    
+                    guests[g] = guests[g].padEnd(charEnd, m.meeting.name.replace(' ', '') + '..........')
+                    // or guests[g] = guests[g].padEnd(charEnd, char)
                 })
             })
 
