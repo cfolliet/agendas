@@ -13,10 +13,39 @@ function Agenda(_times) {
             })
     }
 
-    return { meetings, times, toString }
+    function toString2() {
+        const dayDuration = utils().endDay - utils().startDay
+        const pas = 15
+        const maxMinutes = dayDuration * utils().nbDays
+        const maxCharacters = maxMinutes / pas; // maxMinutes(45h) / 15min
+        const guests = {}
+
+        meetings.map((m, i) => {
+            return { meeting: m, slot: times[i] }
+        })
+            .sort((a, b) => a.slot.time - b.slot.time)
+            .sort((a, b) => a.slot.day - b.slot.day)
+            .forEach(m => {
+                const charStart = (m.slot.day * dayDuration + m.slot.time - utils().startDay) / pas
+                const charEnd = (m.slot.day * dayDuration + m.slot.time + m.meeting.duration + 1 - utils().startDay) / pas
+
+                m.meeting.guests.forEach(g => {
+                    let guest = guests[g]
+                    if(!guest){
+                        guest = ''
+                        guests[g] = guest
+                    }
+                })
+            })
+
+    }
+
+    return { meetings, times, toString, toString2 }
 }
 
 function utils() {
+    const nbDays = 5 // 5 days workweek
+
     function getTime(t) {
         let hours = Math.trunc(t / 60)
         let minutes = t % 60
@@ -41,7 +70,7 @@ function utils() {
     }
 
     function getRandomDay() {
-        return Math.floor((Math.random() * 5)) // 5 days workweek
+        return Math.floor((Math.random() * nbDays))
     }
 
     return {
@@ -49,6 +78,7 @@ function utils() {
         endDay: 18 * 60, // 18h
         startLunch: 12 * 60,
         endLunch: 14 * 60,
+        nbDays,
         getTime,
         setTime,
         getRandomDuration,
@@ -151,7 +181,7 @@ function fitness(agenda) {
     const lastMeeting = sortedMeetings[sortedMeetings.length - 1]
     const end = lastMeeting.slot.day * fullDayDuration + lastMeeting.slot.time + lastMeeting.meeting.duration
     const fullMeetingsSpanDuration = end - start
-    const subscore = 1/fullMeetingsSpanDuration
+    const subscore = 1 / fullMeetingsSpanDuration
 
     return score + subscore
 }
@@ -293,8 +323,8 @@ function pileUp() {
         setMeetingToGuests(m.guests, nextAvailability, m.duration, guestNextTimes)
     })
 
-    agenda.toString()
-    console.log(fitness(agenda))
+    agenda.toString2()
+    //console.log(fitness(agenda))
 }
 
 pileUp()
